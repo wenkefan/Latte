@@ -4,6 +4,7 @@ import com.joanzapata.iconify.IconFontDescriptor;
 import com.joanzapata.iconify.Iconify;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.WeakHashMap;
 
 /**
@@ -13,7 +14,7 @@ import java.util.WeakHashMap;
 
 public class Configurator {
     //WeakHashMap里的键值对，在不使用的时候会回收
-    private static final WeakHashMap<String,Object> LATTE_CONFIGS = new WeakHashMap<>();
+    private static final HashMap<String,Object> LATTE_CONFIGS = new HashMap<>();
     private static final ArrayList<IconFontDescriptor> ICONS = new ArrayList<>();
 
     private Configurator(){
@@ -24,7 +25,7 @@ public class Configurator {
         return Holder.INSTANCE;
     }
 
-    final WeakHashMap<String,Object> getLatteConfigs(){
+    final HashMap<String,Object> getLatteConfigs(){
         return LATTE_CONFIGS;
     }
 
@@ -63,8 +64,12 @@ public class Configurator {
         }
     }
 
-    final <T> T getConfiguration(Enum<ConfigType> key){
+    final <T> T getConfiguration(Object key){
         checkConfiguration();
-        return (T) LATTE_CONFIGS.get(key.name());
+        final Object value = LATTE_CONFIGS.get(key);
+        if (value == null){
+            throw new NullPointerException(key + "IS NULL");
+        }
+        return (T) LATTE_CONFIGS.get(key);
     }
 }
